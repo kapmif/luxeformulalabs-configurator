@@ -1,0 +1,21 @@
+{
+  "name": "luxeformulalabs-configurator",
+  "version": "1.0.0",
+  "description": "Custom nail polish configurator for LuxeFormula Labs",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'No build needed for static site'",
+    "deploy": "echo 'Deploy via Cloudflare Pages'"
+  },
+  "keywords": [
+    "nail-polish",
+    "configurator",
+    "custom",
+    "beauty",
+    "manufacturing"
+  ],
+  "author": "LuxeFormula Labs",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}
