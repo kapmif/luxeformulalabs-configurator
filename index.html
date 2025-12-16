@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Nail Polish Configurator | LuxeFormula Labs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff6b9d;
+            --secondary: #6c5ce7;
+            --accent: #00cec9;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --danger: #d63031;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --border: #dfe6e9;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        header {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            color: #636e72;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Main Layout */
+        .configurator {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .configurator {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Steps Navigation */
+        .steps-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .step-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .step-btn:hover {
+            border-color: var(--primary);
+            background: var(--light);
+        }
+        
+        .step-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .step-btn.completed {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+        
+        /* Configuration Panel */
+        .config-panel {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .panel-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        /* Formula Selection */
+        .formula-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .formula-card {
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .formula-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+        
+        .formula-card.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(108, 92, 231, 0.1) 100%);
+        }
+        
+        .formula-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .formula-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--success);
+            margin: 0.5rem 0;
+        }
+        
+        /* Color Selection */
+        .color-picker {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .color-option {
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.05);
+        }
+        
+        .color-option.selected {
+            border-color: var(--dark);
+            box-shadow: var(--shadow);
+        }
+        
+        .color-swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 0.5rem;
+            border: 2px solid var(--border);
+        }
+        
+        /* Quantity Selector */
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .quantity-input {
+            width: 120px;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        /* Price Breakdown */
+        .price-breakdown {
+            background: var(--light);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .price-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .total-price {
+            color: var(--success);
+            font-size: 1.5rem;
+        }
+        
+        /* Contact Form */
+        .contact-form {
+            background: var(--light);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+        }
+        
+        /* CTA Buttons */
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--dark);
+            border: 2px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            background: var(--light);
+        }
+        
+        /* Preview Panel */
+        .preview-panel {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+        
+        .nail-preview {
+            width: 200px;
+            height: 300px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nail-color {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            right: 10%;
+            bottom: 10%;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-palette"></i>
+                LuxeFormula Labs - Custom Nail Polish Configurator
+            </div>
+            <p class="subtitle">Create your custom nail polish in 7 easy steps</p>
+        </header>
+        
+        <!-- Steps Navigation -->
+        <div class="steps-nav">
+            <button class="step-btn active" onclick="showStep(1)">
+                <i class="fas fa-flask"></i> 1. Formula
+            </button>
+            <button class="step-btn" onclick="showStep(2)">
+                <i class="fas fa-palette"></i> 2. Color
+            </button>
+            <button class="step-btn" onclick="showStep(3)">
+                <i class="fas fa-magic"></i> 3. Effects
+            </button>
+            <button class="step-btn" onclick="showStep(4)">
+                <i class="fas fa-wine-bottle"></i> 4. Bottle
+            </button>
+            <button class="step-btn" onclick="showStep(5)">
+                <i class="fas fa-tag"></i> 5. Label
+            </button>
+            <button class="step-btn" onclick="showStep(6)">
+                <i class="fas fa-box"></i> 6. Quantity
+            </button>
+            <button class="step-btn" onclick="showStep(7)">
+                <i class="fas fa-shipping-fast"></i> 7. Shipping
+            </button>
+        </div>
+        
+        <div class="configurator">
+            <!-- Left Configuration Panel -->
+            <div class="config-panel" id="configurationPanel">
+                <!-- Step 1: Formula Selection -->
+                <div id="step1" class="step-content">
+                    <div class="panel-title">
+                        <i class="fas fa-flask"></i> Step 1: Select Your Formula
+                    </div>
+                    
+                    <div class="formula-grid" id="formulaOptions">
+                        <!-- Formulas will be loaded by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Step 2: Color Selection -->
+                <div id="step2" class="step-content" style="display: none;">
+                    <div class="panel-title">
+                        <i class="fas fa-palette"></i> Step 2: Choose Your Color
+                    </div>
+                    
+                    <div class="color-picker" id="colorOptions">
+                        <!-- Colors will be loaded by JavaScript -->
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">
+                            <i class="fas fa-palette"></i> Custom Pantone Color
+                        </label>
+                        <input type="text" id="customPantone" placeholder="Enter Pantone code (e.g., 17-1230 TCX)" 
+                               style="width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: var(--radius);">
+                    </div>
+                </div>
+                
+                <!-- Step 3: Effects -->
+                <div id="step3" class="step-content" style="display: none;">
+                    <div class="panel-title">
+                        <i class="fas fa-magic"></i> Step 3: Add Special Effects
+                    </div>
+                    <div id="effectOptions">
+                        <!-- Effects will be loaded by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Step 4: Bottle -->
+                <div id="step4" class="step-content" style="display: none;">
+                    <div class="panel-title">
+                        <i class="fas fa-wine-bottle"></i> Step 4: Select Bottle & Packaging
+                    </div>
+                    <div id="bottleOptions">
+                        <!-- Bottle options will be loaded by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Step 5: Label -->
+                <div id="step5" class="step-content" style="display: none;">
+                    <div class="panel-title">
+                        <i class="fas fa-tag"></i> Step 5: Label & Branding
+                    </div>
+                    <div id="labelOptions">
+                        <!-- Label options will be loaded by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Step 6: Quantity -->
+                <div id="step6" class="step-content" style="display: none;">
+                    <div class="panel-title">
+                        <i class="fas fa-box"></i> Step 6: Choose Quantity
+                    </div>
+                    
+                    <div class="quantity-selector">
+                        <input type="number" id="quantity" class="quantity-input" value="500" min="100" step="100">
+                        <span>bottles (MOQ: 100)</span>
+                    </div>
+                    
+                    <div class="price-breakdown" id="quantityPrice">
+                        <!-- Price breakdown will be updated dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Step 7: Shipping -->
+                <div id="step7" class="step-content" style="display: none;">
+                    <div class="panel-title">
+                        <i class="fas fa-shipping-fast"></i> Step 7: Shipping & Delivery
+                    </div>
+                    
+                    <div class="contact-form">
+                        <div class="form-group">
+                            <label class="form-label">Country</label>
+                            <select id="country" class="form-input">
+                                <option value="usa">United States</option>
+                                <option value="canada">Canada</option>
+                                <option value="europe">Europe</option>
+                                <option value="asia">Asia</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">ZIP/Postal Code</label>
+                            <input type="text" id="zipCode" class="form-input" placeholder="Enter ZIP/Postal code">
+                        </div>
+                        
+                        <div id="shippingResults" style="display: none;">
+                            <!-- Shipping results will be shown here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Navigation Buttons -->
+                <div class="cta-buttons">
+                    <button class="btn btn-secondary" id="prevBtn" style="display: none;" onclick="prevStep()">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Right Preview Panel -->
+            <div class="preview-panel">
+                <div class="panel-title">
+                    <i class="fas fa-eye"></i> Live Preview
+                </div>
+                
+                <!-- Nail Preview -->
+                <div style="text-align: center; margin: 2rem 0;">
+                    <div class="nail-preview">
+                        <div class="nail-color" id="nailPreview"></div>
+                    </div>
+                </div>
+                
+                <!-- Configuration Summary -->
+                <div style="background: var(--light); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 1rem;">Your Configuration:</h4>
+                    <div id="configSummary">
+                        <!-- Summary will be updated dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Total Price -->
+                <div style="background: var(--light); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 1rem;">Total Investment:</h4>
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--success); text-align: center;">
+                        $<span id="totalPrice">0.00</span>
+                    </div>
+                    <div style="text-align: center; color: #636e72; margin-top: 0.5rem;">
+                        <span id="perUnitCost">$0.00</span> per bottle
+                    </div>
+                </div>
+                
+                <!-- Contact Information -->
+                <div class="contact-form">
+                    <h4 style="margin-bottom: 1rem;">Contact Information</h4>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Company Name</label>
+                        <input type="text" id="companyName" class="form-input" placeholder="Your company name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Contact Person</label>
+                        <input type="text" id="contactName" class="form-input" placeholder="Your name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="email" class="form-input" placeholder="your@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" id="phone" class="form-input" placeholder="+1 (123) 456-7890">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Additional Notes</label>
+                        <textarea id="notes" class="form-input" rows="3" placeholder="Any special requirements..."></textarea>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div style="margin-top: 2rem;">
+                    <button class="btn btn-primary" style="width: 100%;" onclick="submitQuoteRequest()">
+                        <i class="fas fa-paper-plane"></i> Request Detailed Quote
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration data
+        const configuration = {
+            currentStep: 1,
+            formula: null,
+            color: null,
+            effects: [],
+            bottle: null,
+            label: null,
+            quantity: 500,
+            shipping: {
+                country: 'usa',
+                zipCode: '',
+                cost: 0
+            }
+        };
+        
+        // Formula data
+        const formulas = [
+            {
+                id: 'standard',
+                name: 'Standard Polish',
+                description: 'Traditional nail polish formula',
+                price: 2.20,
+                features: ['Air dry', 'Easy removal', 'Wide color range'],
+                badge: null
+            },
+            {
+                id: '10-free',
+                name: '10-Free Formula',
+                description: 'Free from 10 harmful chemicals',
+                price: 2.50,
+                features: ['Formaldehyde free', 'Toluene free', 'DBP free'],
+                badge: 'CLEAN'
+            },
+            {
+                id: '21-free',
+                name: '21-Free Vegan',
+                description: 'High-end clean formula, 100% vegan',
+                price: 2.80,
+                features: ['PETA vegan', 'Cruelty-free', 'EU compliant'],
+                badge: 'VEGAN'
+            },
+            {
+                id: '24-free',
+                name: '24-Free Ultra Clean',
+                description: 'Removes 24 harmful substances',
+                price: 3.20,
+                features: ['PETA vegan', 'Leaping Bunny', 'EU + FDA compliant'],
+                badge: 'PREMIUM'
+            }
+        ];
+        
+        // Color data
+        const colors = [
+            { id: 'ballet-slipper', name: 'Ballet Slipper', hex: '#F8DFD4', pantone: '12-1209 TCX' },
+            { id: 'mocha-mousse', name: 'Mocha Mousse', hex: '#8B7355', pantone: '17-1230 TCX' },
+            { id: 'peach-fuzz', name: 'Peach Fuzz', hex: '#FFBE98', pantone: '13-1023 TCX' },
+            { id: 'viva-magenta', name: 'Viva Magenta', hex: '#BE3455', pantone: '18-1750 TCX' },
+            { id: 'very-peri', name: 'Very Peri', hex: '#6667AB', pantone: '17-3938 TCX' }
+        ];
+        
+        // Effects data
+        const effects = [
+            { id: 'chrome', name: 'Chrome Finish', price: 2.50 },
+            { id: 'matte', name: 'Matte Finish', price: 1.20 },
+            { id: 'glitter', name: 'Glitter', price: 1.50 },
+            { id: 'holographic', name: 'Holographic', price: 2.80 }
+        ];
+        
+        // Bottle data
+        const bottles = [
+            { id: '10ml-round', name: '10ml Round Glass', price: 0.35 },
+            { id: '12ml-square', name: '12ml Square Glass', price: 0.45 },
+            { id: '15ml-round', name: '15ml Round Glass', price: 0.55 }
+        ];
+        
+        // Label data
+        const labels = [
+            { id: 'no-label', name: 'No Label (Blank)', price: 0 },
+            { id: 'standard', name: 'Standard Printed', price: 0.15 },
+            { id: 'metallic', name: 'Metallic Foil', price: 0.35 }
+        ];
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFormulas();
+            loadColors();
+            loadEffects();
+            loadBottles();
+            loadLabels();
+            updatePreview();
+            updatePrice();
+        });
+        
+        // Load formulas
+        function loadFormulas() {
+            const container = document.getElementById('formulaOptions');
+            container.innerHTML = '';
+            
+            formulas.forEach(formula => {
+                const card = document.createElement('div');
+                card.className = 'formula-card';
+                card.id = `formula-${formula.id}`;
+                card.onclick = () => selectFormula(formula.id);
+                
+                card.innerHTML = `
+                    ${formula.badge ? `<div class="formula-badge">${formula.badge}</div>` : ''}
+                    <h3>${formula.name}</h3>
+                    <p style="color: #636e72; margin: 0.5rem 0;">${formula.description}</p>
+                    <div class="formula-price">$${formula.price.toFixed(2)}/unit</div>
+                    <div style="margin-top: 1rem;">
+                        ${formula.features.map(feature => `
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin: 0.25rem 0;">
+                                <i class="fas fa-check" style="color: var(--success);"></i>
+                                <span>${feature}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // Load colors
+        function loadColors() {
+            const container = document.getElementById('colorOptions');
+            container.innerHTML = '';
+            
+            colors.forEach(color => {
+                const option = document.createElement('div');
+                option.className = 'color-option';
+                option.id = `color-${color.id}`;
+                option.onclick = () => selectColor(color.id);
+                
+                option.innerHTML = `
+                    <div class="color-swatch" style="background: ${color.hex};"></div>
+                    <div style="font-weight: 600;">${color.name}</div>
+                    <div style="font-size: 0.85rem; color: #636e72;">${color.pantone}</div>
+                `;
+                
+                container.appendChild(option);
+            });
+        }
+        
+        // Load effects
+        function loadEffects() {
+            const container = document.getElementById('effectOptions');
+            container.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    ${effects.map(effect => `
+                        <div class="formula-card" id="effect-${effect.id}" onclick="toggleEffect('${effect.id}')">
+                            <h3>${effect.name}</h3>
+                            <div class="formula-price">+$${effect.price.toFixed(2)}/unit</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // Load bottles
+        function loadBottles() {
+            const container = document.getElementById('bottleOptions');
+            container.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    ${bottles.map(bottle => `
+                        <div class="formula-card" id="bottle-${bottle.id}" onclick="selectBottle('${bottle.id}')">
+                            <h3>${bottle.name}</h3>
+                            <div class="formula-price">+$${bottle.price.toFixed(2)}/unit</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // Load labels
+        function loadLabels() {
+            const container = document.getElementById('labelOptions');
+            container.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    ${labels.map(label => `
+                        <div class="formula-card" id="label-${label.id}" onclick="selectLabel('${label.id}')">
+                            <h3>${label.name}</h3>
+                            <div class="formula-price">${label.price > 0 ? '+$' + label.price.toFixed(2) + '/unit' : 'Included'}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // Selection functions
+        function selectFormula(id) {
+            configuration.formula = formulas.find(f => f.id === id);
+            updateSelection('formula', id);
+            updatePreview();
+            updatePrice();
+        }
+        
+        function selectColor(id) {
+            configuration.color = colors.find(c => c.id === id);
+            updateSelection('color', id);
+            updatePreview();
+        }
+        
+        function toggleEffect(id) {
+            const effect = effects.find(e => e.id === id);
+            const index = configuration.effects.findIndex(e => e.id === id);
+            
+            if (index > -1) {
+                configuration.effects.splice(index, 1);
+                document.getElementById(`effect-${id}`).classList.remove('selected');
+            } else {
+                configuration.effects.push(effect);
+                document.getElementById(`effect-${id}`).classList.add('selected');
+            }
+            
+            updatePrice();
+        }
+        
+        function selectBottle(id) {
+            configuration.bottle = bottles.find(b => b.id === id);
+            updateSelection('bottle', id);
+            updatePrice();
+        }
+        
+        function selectLabel(id) {
+            configuration.label = labels.find(l => l.id === id);
+            updateSelection('label', id);
+            updatePrice();
+        }
+        
+        function updateSelection(type, id) {
+            // Remove selected class from all options of this type
+            document.querySelectorAll(`[id^="${type}-"]`).forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Add selected class to current option
+            const selectedEl = document.getElementById(`${type}-${id}`);
+            if (selectedEl) {
+                selectedEl.classList.add('selected');
+            }
+        }
+        
+        // Step navigation
+        function showStep(step) {
+            // Hide all steps
+            for (let i = 1; i <= 7; i++) {
+                document.getElementById(`step${i}`).style.display = 'none';
+                document.querySelectorAll('.step-btn')[i-1].classList.remove('active');
+            }
+            
+            // Show current step
+            document.getElementById(`step${step}`).style.display = 'block';
+            document.querySelectorAll('.step-btn')[step-1].classList.add('active');
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').style.display = step > 1 ? 'flex' : 'none';
+            document.getElementById('nextBtn').innerHTML = step < 7 ? 'Next <i class="fas fa-arrow-right"></i>' : 'Complete';
+            
+            configuration.currentStep = step;
+        }
+        
+        function nextStep() {
+            if (configuration.currentStep < 7) {
+                showStep(configuration.currentStep + 1);
+            } else {
+                submitQuoteRequest();
+            }
+        }
+        
+        function prevStep() {
+            if (configuration.currentStep > 1) {
+                showStep(configuration.currentStep - 1);
+            }
+        }
+        
+        // Update preview
+        function updatePreview() {
+            const preview = document.getElementById('nailPreview');
+            if (configuration.color) {
+                preview.style.background = configuration.color.hex;
+            }
+            
+            // Update configuration summary
+            const summary = document.getElementById('configSummary');
+            summary.innerHTML = `
+                <div style="margin-bottom: 0.5rem;">
+                    <strong>Formula:</strong> ${configuration.formula ? configuration.formula.name : 'Not selected'}
+                </div>
+                <div style="margin-bottom: 0.5rem;">
+                    <strong>Color:</strong> ${configuration.color ? configuration.color.name : 'Not selected'}
+                </div>
+                <div style="margin-bottom: 0.5rem;">
+                    <strong>Effects:</strong> ${configuration.effects.length > 0 ? configuration.effects.map(e => e.name).join(', ') : 'None'}
+                </div>
+                <div style="margin-bottom: 0.5rem;">
+                    <strong>Bottle:</strong> ${configuration.bottle ? configuration.bottle.name : 'Not selected'}
+                </div>
+                <div>
+                    <strong>Label:</strong> ${configuration.label ? configuration.label.name : 'Not selected'}
+                </div>
+            `;
+        }
+        
+        // Update price
+        function updatePrice() {
+            let total = 0;
+            let breakdown = '';
+            
+            // Formula cost
+            if (configuration.formula) {
+                const formulaCost = configuration.formula.price * configuration.quantity;
+                total += formulaCost;
+                breakdown += `
+                    <div class="price-row">
+                        <span>Formula (${configuration.quantity} × $${configuration.formula.price.toFixed(2)})</span>
+                        <span>$${formulaCost.toFixed(2)}</span>
+                    </div>
+                `;
+            }
+            
+            // Effects cost
+            if (configuration.effects.length > 0) {
+                configuration.effects.forEach(effect => {
+                    const effectCost = effect.price * configuration.quantity;
+                    total += effectCost;
+                    breakdown += `
+                        <div class="price-row">
+                            <span>${effect.name} (${configuration.quantity} × $${effect.price.toFixed(2)})</span>
+                            <span>$${effectCost.toFixed(2)}</span>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Bottle cost
+            if (configuration.bottle) {
+                const bottleCost = configuration.bottle.price * configuration.quantity;
+                total += bottleCost;
+                breakdown += `
+                    <div class="price-row">
+                        <span>Bottle (${configuration.quantity} × $${configuration.bottle.price.toFixed(2)})</span>
+                        <span>$${bottleCost.toFixed(2)}</span>
+                    </div>
+                `;
+            }
+            
+            // Label cost
+            if (configuration.label) {
+                const labelCost = configuration.label.price * configuration.quantity;
+                total += labelCost;
+                if (labelCost > 0) {
+                    breakdown += `
+                        <div class="price-row">
+                            <span>Label (${configuration.quantity} × $${configuration.label.price.toFixed(2)})</span>
+                            <span>$${labelCost.toFixed(2)}</span>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Shipping cost (estimate)
+            const shippingCost = calculateShipping();
+            total += shippingCost;
+            if (shippingCost > 0) {
+                breakdown += `
+                    <div class="price-row">
+                        <span>Estimated Shipping</span>
+                        <span>$${shippingCost.toFixed(2)}</span>
+                    </div>
+                `;
+            }
+            
+            // Update quantity price breakdown
+            document.getElementById('quantityPrice').innerHTML = `
+                <h4>Price Breakdown:</h4>
+                ${breakdown}
+                <div class="price-row">
+                    <span><strong>Total</strong></span>
+                    <span class="total-price"><strong>$${total.toFixed(2)}</strong></span>
+                </div>
+            `;
+            
+            // Update total price display
+            document.getElementById('totalPrice').textContent = total.toFixed(2);
+            document.getElementById('perUnitCost').textContent = `$${(total / configuration.quantity).toFixed(2)}`;
+            
+            // Update quantity
+            const quantityInput = document.getElementById('quantity');
+            quantityInput.addEventListener('input', function() {
+                configuration.quantity = parseInt(this.value) || 100;
+                updatePrice();
+            });
+        }
+        
+        // Calculate shipping
+        function calculateShipping() {
+            const country = document.getElementById('country').value;
+            const weight = configuration.quantity * 0.1; // Approximate weight per bottle
+            
+            let shippingCost = 0;
+            
+            switch(country) {
+                case 'usa':
+                    shippingCost = 15 + (weight * 2);
+                    break;
+                case 'canada':
+                    shippingCost = 25 + (weight * 3);
+                    break;
+                case 'europe':
+                    shippingCost = 50 + (weight * 5);
+                    break;
+                case 'asia':
+                    shippingCost = 60 + (weight * 6);
+                    break;
+                default:
+                    shippingCost = 75 + (weight * 7);
+            }
+            
+            // Free shipping for large orders
+            if (configuration.quantity >= 5000) {
+                shippingCost = 0;
+            }
+            
+            return Math.round(shippingCost);
+        }
+        
+        // Submit quote request
+        function submitQuoteRequest() {
+            // Get form data
+            const companyName = document.getElementById('companyName').value.trim();
+            const contactName = document.getElementById('contactName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const notes = document.getElementById('notes').value.trim();
+            const customPantone = document.getElementById('customPantone').value.trim();
+            
+            // Validate required fields
+            if (!companyName || !contactName || !email) {
+                alert('Please fill in all required fields: Company Name, Contact Person, and Email Address.');
+                return;
+            }
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+            
+            // Prepare quote data
+            const quoteData = {
+                configuration: configuration,
+                customer: {
+                    company: companyName,
+                    contact: contactName,
+                    email: email,
+                    phone: phone,
+                    notes: notes,
+                    customPantone: customPantone
+                },
+                timestamp: new Date().toISOString(),
+                totalPrice: parseFloat(document.getElementById('totalPrice').textContent)
+            };
+            
+            // Use Formspree for email submission (free service)
+            const formEndpoint = 'https://formspree.io/f/YOUR_FORM_ID_HERE';
+            
+            fetch(formEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    _subject: `New Quote Request from ${companyName}`,
+                    _replyto: email,
+                    _cc: 'info@luxeformulalabs.com',
+                    company: companyName,
+                    contact: contactName,
+                    email: email,
+                    phone: phone,
+                    formula: configuration.formula ? configuration.formula.name : 'Not selected',
+                    color: configuration.color ? `${configuration.color.name} (${configuration.color.pantone})` : 'Not selected',
+                    customPantone: customPantone,
+                    effects: configuration.effects.map(e => e.name).join(', ') || 'None',
+                    bottle: configuration.bottle ? configuration.bottle.name : 'Not selected',
+                    label: configuration.label ? configuration.label.name : 'Not selected',
+                    quantity: configuration.quantity,
+                    totalPrice: `$${quoteData.totalPrice.toFixed(2)}`,
+                    perUnit: `$${(quoteData.totalPrice / configuration.quantity).toFixed(2)}`,
+                    notes: notes,
+                    configurationDetails: JSON.stringify(configuration, null, 2)
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Thank you! Your quote request has been submitted.\n\nOur team will contact you within 24 hours.');
+                    
+                    // Optionally reset form
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 3000);
+                } else {
+                    alert('There was an error submitting your request. Please try again or email us directly at info@luxeformulalabs.com');
+                }
+            })
+            .catch(error => {
+                alert('Network error. Please check your connection and try again.');
+            });
+        }
+    </script>
+</body>
+</html>
